@@ -9,7 +9,7 @@ import Cursor from './components/Cursor';
 import Sky from './components/Sky';
 
 class MXVRScene extends React.Component {
-  constructor(props) {
+  constructor(props, $http) {
     super(props);
     this.state = {
       color: 'red'
@@ -38,38 +38,12 @@ class MXVRScene extends React.Component {
     window.open('http://meetup.com/mxvrco');
   };
 
-
-  //Get Random Image from mxvr.co/media/*/img/*.jpg;
-  getRandImgFromMedia = () =>{
-    var meetupNo;
-    var imageNo;
-
-    var imageSrc;
-
-    meetupNo = Math.floor(Math.random()* 10);
-    ("00"+meetupNo).substr(-2,2);
-    
-    imageSrc = 'http://mxvr.co/media/'+meetupNo+'/img/001.jpg';
-
-    console.log("Image Source", imageSrc);
-
-
-    return imageSrc;
-  };
-
-
-  getImageFromMedia = () =>{
+  getImageFromMedia = () => {
     var imageUrl;
-    $.ajax({
-      type: "POST",
-      url: "http://mxvr.co/src/php/getimage.php",
-      success: function (data) {
-        console.log(data);
-        imageUrl = data;
-      }
+    $.get({
+      url: "http://mxvr.co/src/php/getimage.php"
     });
   };
-
 
   render () {
     return (
@@ -136,7 +110,7 @@ class MXVRScene extends React.Component {
         <Entity light={{type: 'directional', intensity: 1}} position={[1, 1, 0]}/>
 
         //Curved Images
-        <a-curvedimage src="http://mxvr.co/media/09/img/001.jpg" radius="4" theta-length="30" height="1.5"
+        <a-curvedimage src={this.getImageFromMedia} radius="4" theta-length="30" height="1.5"
                      rotation="0 -75 0" scale=".6 .6 .6"></a-curvedimage>
 
         <a-curvedimage src="http://mxvr.co/media/08/img/001.jpg" radius="4" theta-length="30" height="1.5"
@@ -190,7 +164,7 @@ class MXVRScene extends React.Component {
         //Facebook Btn
         <Entity obj-model={{obj: "#facebook-obj", mtl: "#facebook-mtl"}}
                 scale="0.09 0.09 0.09" position="0 -0.5 -10"
-                onClick={this.gotoFacebook}>
+                onClick={this.getImageFromMedia}>
                 <Animation attribute="position" dur="5000" from="0 30 -20" to="0 -0.5 -10"></Animation>
                 <Animation attribute="rotation" begin="2000" dur="30000" repeat="loop" to="0 360 0"/>
         </Entity>
@@ -256,3 +230,4 @@ class MXVRScene extends React.Component {
 }
 
 ReactDOM.render(<MXVRScene/>, document.querySelector('.scene-container'));
+ 
